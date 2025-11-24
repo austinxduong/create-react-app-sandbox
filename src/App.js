@@ -5,7 +5,8 @@ import logo from './logo.svg';
 import './App.css';
 
 
-// -------------------------- Promise/then method ------------------------------------
+// -------------------------- async/await method ------------------------------------
+
 
 export default class App extends Component {
   constructor(props) {
@@ -26,22 +27,22 @@ export default class App extends Component {
     }
   }
 
+  // returns a promise
   getCurrentPosition = (options = {}) => {
     return new Promise((accept, reject) => {
       navigator.geolocation.getCurrentPosition(accept, reject, options);
     })
   }
 
-// load position function/component
-  loadPosition = () => {
-    this.getCurrentPosition()
-    .then(position => {
+// consume the promise
+  loadPosition = async () => {
+    try {
+      const position = await this.getCurrentPosition(); // instead of .then //if accept
       const {latitude, longitude} = position.coords;
-      this.setState({ latitude, longitude })
-    })
-    .catch((error) => {
-      console.error("Error", error);
-    })
+      this.setState({ latitude, longitude });
+    } catch (error){ // if reject
+      console.error("Error:", error); 
+    } 
 };
 
   render() {
@@ -55,6 +56,59 @@ export default class App extends Component {
     );
   }
 }
+
+
+// -------------------------- Promise/then/catch method ------------------------------------
+
+// export default class App extends Component {
+//   constructor(props) {
+//     super(props);
+
+//     this.state = {
+//       latitude: null,
+//       longitude: null
+//     }
+//   }
+
+
+//   componentDidMount() {
+//     // checks to make sure the browser supports geolocation
+//     if ("geolocation" in navigator) {
+//     // if does, call load position function
+//       this.loadPosition();
+//     }
+//   }
+
+//   // returns a promise
+//   getCurrentPosition = (options = {}) => {
+//     return new Promise((accept, reject) => {
+//       navigator.geolocation.getCurrentPosition(accept, reject, options);
+//     })
+//   }
+
+// // consume the promise
+//   loadPosition = () => {
+//     this.getCurrentPosition() // returns a promise
+//     .then(position => { // consuming/handling resolved value
+//       const {latitude, longitude} = position.coords;
+//       this.setState({ latitude, longitude })
+//     })
+//     .catch((error) => { // handle promise rejects
+//       console.error("Error", error);
+//     })
+// };
+
+//   render() {
+//     return (
+//       <div className="App">
+//         {/* display the getters */}
+//         Latitude: {this.state.latitude}
+//         <br />
+//         Longitude: {this.state.longitude}
+//       </div>
+//     );
+//   }
+// }
 
 
 // -------------------------- call back method -------------------------------
